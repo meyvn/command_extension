@@ -30,7 +30,6 @@ class YourCommand
   after_commit :update_something_by_sidekiq
   
   def execute
-
     ActiveRecord::Base.transaction do
       ...
       after_commit do
@@ -47,7 +46,7 @@ class YourCommand
 end
 ```
 
-Another example with subcommand, in this example, you are sure that emails will be sent only if the transaction is completed
+Another example with subcommand, you are sure that emails will be sent only if the transaction is completed
 
 ```ruby
 class BaseCommand
@@ -98,10 +97,6 @@ class UpdateUserProfit < BaseCommand
   end
 end
 ```
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Development
 
