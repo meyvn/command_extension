@@ -1,8 +1,6 @@
 # CommandExtension
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/command_extension`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Gem will help if you have a lot of commands with delayed calls, for example delayed jobs or sidekiq, and you want them to be executed only after the AR transaction is completed.
 
 ## Installation
 
@@ -19,6 +17,87 @@ And then execute:
 Or install it yourself as:
 
     $ gem install command_extension
+
+## Usage
+
+Here's a basic example of a command
+
+```ruby
+class YourCommand
+  include CommandExtension::Base
+  include CommandExtension::AfterCommit
+
+  after_commit :update_something_by_sidekiq
+  
+  def execute
+
+    ActiveRecord::Base.transaction do
+      ...
+      after_commit do
+        ...
+      end
+    end
+    
+    super
+  end
+  
+  def update_something_by_sidekiq
+    ...
+  end
+end
+```
+
+Another example with subcommand, in this example, you are sure that emails will be sent only if the transaction is completed
+
+```ruby
+class BaseCommand
+  include CommandExtension::Base
+  include CommandExtension::AfterCommit
+end
+
+class CreateOrderCommand < BaseCommand
+  def execute
+    ActiveRecord::Base.transaction do
+      order = Order.create()
+      
+      after_commit do
+        SendEmailToBuyer.call_async(order.user_id)
+      end
+
+      subcommand(UpdateUserProfit.new(order)).execute
+      
+      # if an error occurs then nothing will be sent
+      # raise 
+    end
+
+    super
+  end
+end
+
+class UpdateUserProfit < BaseCommand
+  
+  attr_reader :order
+  
+  def initialize(order)
+    @order = order
+    
+    super()
+  end
+  
+  def execute
+    ActiveRecord::Base.transaction do
+      profit = Profit.find_by(user_id: order.seller_id)
+      profit.update_something
+      
+      after_commit do
+        SendEmailToSeller.call_async(order.seller_id)
+      end
+    end
+    
+    super
+  end
+end
+```
 
 ## Usage
 

@@ -8,6 +8,8 @@ module CommandExtension
 
     module InstanceMethods
       def execute; end
+
+      def reset; end
     end
   end
 end
