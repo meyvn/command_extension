@@ -1,0 +1,6 @@
+AllCops:
+  Exclude:
+    - 'command_extension.gemspec'
+
+Style/Documentation:
+  Enabled: false
