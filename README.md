@@ -73,7 +73,7 @@ class CreateOrderCommand < BaseCommand
   end
 end
 
-class UpdateUserProfit < BaseCommand
+class UpdateUserProfitCommand < BaseCommand
   
   attr_reader :order
   
