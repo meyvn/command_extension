@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'Command pattern with after commit logic to avoid AR model callbacks'
   spec.description   = 'Command pattern with after commit logic to avoid AR model callbacks'
-  spec.homepage      = 'http://github.com/'
+  spec.homepage      = 'https://github.com/meyvn/command_extension'
   spec.license       = 'MIT'
 
   # Specify which files should be added to the gem when it is released.
